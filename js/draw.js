@@ -21,6 +21,11 @@ function draw_pixel_char(x, y, char) {
 }
 
 function draw_pixel(x, y) {
+    // console.log(x)
+    if (y == undefined) {
+        y = x.y;
+        x = x.x;
+    }
     draw_pixel_char(x, y, "*");
 }
 
@@ -77,8 +82,16 @@ function draw_line_v(x0, y0, x1, y1) {
 }
 
 function draw_line_bresenham(x0, y0, x1, y1) {
+    // TODO: rename for coordinate objects
+    if (y1 == undefined) {
+        var x1 = y0.x;
+        var y1 = y0.y;
+        var y0 = x0.y;
+        var x0 = x0.x;
+    }
+
     if (Math.abs(x1 - x0) > Math.abs(y1 - y0)) {
-       draw_line_h(x0, y0, x1, y1);
+    draw_line_h(x0, y0, x1, y1);
     }
     else {
         draw_line_v(x0, y0, x1, y1);

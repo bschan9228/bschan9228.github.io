@@ -11,17 +11,24 @@ function render_table() {
 // Braille converter
 // https://en.wikipedia.org/wiki/Braille_Patterns
 // Format is top down, left right
-let unicode_base = 0x2800;
-// let unicode_high = 0x283f;
+let unicode_base = 0x2800; // 3x2 all bits low
+// let unicode_high_3x2 = 0x283F; // 3x2 all bits high
+// let unicode_high_4x2 = 0x28FF; // 4x2 all bits high
+let braille_lut_4x2 = [0x1, 0x2, 0x4, 0x40, 0x8, 0x10, 0x20, 0x80];
+
 function convert_to_braille(pixels) {
     let unicode = unicode_base;
+    let set = 0;
     for (var i = 0; i < pixels.length; i++) {
         if (pixels[i] == "*") {
-            unicode += (1 << i);
+            // unicode += (1 << i); // 3x2
+            unicode += braille_lut_4x2[i];
+            set = 1;
         }
     }
-    char = String.fromCharCode(unicode);
-    return char;
+    // console.log(`read pixels ${pixels}; ${unicode}`)
+    if (!set) return String.fromCharCode(unicode_base);
+    return String.fromCharCode(unicode);
 }
 
 // get mxn pixels from top to bottom, left to right b/c braille
