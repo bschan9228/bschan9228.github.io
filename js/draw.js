@@ -1,15 +1,19 @@
-function clear_grid() {
-    grid = ("-".repeat(width) + "\n").repeat(height);
+function clear_table() {
+    table = new Array(width * height).fill("-");
 }
-function index_grid(x, y) {
+
+function index_table(x, y) {
     // x row, y column
-    return y + (x * width) + x;
+    return y + (x * width) + 1;
+    
 }
 
 function set_char(x, y, char) {
-    index = index_grid(x, y);
-    if (index > grid.length - 1 || index < 0 || grid.charAt(index) == "\n") return;
-    grid = grid.substring(0, index) + char + grid.substring(index + 1);
+    if (y >= width || y < 0) return;
+    index = index_table(x, y);
+    if (index in table) {
+        table[index] = char;
+    }
 }
 
 function draw_pixel_char(x, y, char) {
@@ -36,7 +40,7 @@ function draw_line_h(x0, y0, x1, y1) {
     if (dx !== 0) {
         y = y0;
         p = 2 * dy - dx;
-        for (i = 0; i < dx + 1; i++) {
+        for (var i = 0; i < dx + 1; i++) {
             draw_pixel(x0 + i, y);
             if (p >= 0) {
                 y += dir;
@@ -61,7 +65,7 @@ function draw_line_v(x0, y0, x1, y1) {
     if (dy !== 0) {
         x = x0;
         p = 2 * dx - dy;
-        for (i = 0; i < dy + 1; i++) {
+        for (var i = 0; i < dy + 1; i++) {
             draw_pixel(x, y0 + i);
             if (p >= 0) {
                 x += dir;

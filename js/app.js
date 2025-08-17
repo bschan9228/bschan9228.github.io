@@ -1,27 +1,33 @@
 let count = 2;
-let frequency = 25;
-// let width = 250;
-// let height = 60;
-let width = 150;
-let height = 35;
-let rotation = 0;
-let radius = -7;
+let frequency = 150;
+let height = 80;
+let width = 200;
 
-// https://stackoverflow.com/questions/51185/are-javascript-strings-immutable-do-i-need-a-string-builder-in-javascript
-// string concat faster than array?
-let grid = ("-".repeat(width) + "\n").repeat(height);
+// let width = 450;
+// let height = 106;
+
+let table = new Array(width * height).fill("-"); // Ascii memory
+let frame = ""; // Rendered ascii
+
+// random vals
+let rotation = 0;
+let rotation_rate = 3 * (Math.PI / 180);
+let radius = -50;
 
 function run_animation() {
-        clear_grid();
-        // Rotating animation
-        let x = Math.round(radius * Math.cos(rotation));
-        let y = Math.round(radius * Math.sin(rotation));
-        rotation = (rotation - Math.PI / 180) % (2 * Math.PI);
-        draw_line_bresenham(15, 75, x + 15, y + 75);
+    // Rotating animation
+    clear_table();
+    let x = Math.round(radius * Math.cos(rotation));
+    let y = Math.round(radius * Math.sin(rotation));
+    rotation = (rotation - rotation_rate) % (2 * Math.PI);
+    draw_line_bresenham(height/2, width/2, x + height/2, y + width/2);
 
-        document.getElementById("anim").innerText = grid;
+    // render_table();
+    render_table_mxn(3, 2);
+    document.getElementById("frame").innerText = frame;
+    // console.log(`HEYO [${table[index_table(46, 51)]}]`)
 }
 
 const interval = setInterval(function() {
-  run_animation();
+    run_animation();
 }, frequency);
