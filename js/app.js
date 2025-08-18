@@ -1,4 +1,3 @@
-let count = 2;
 let frequency = 100;
 let height = 80;
 let width = 100;
