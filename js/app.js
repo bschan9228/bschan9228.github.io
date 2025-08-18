@@ -8,6 +8,7 @@ let frame = ""; // Rendered ascii
 function run_animation() {
     clear_table();
     animate_proc();
+    set_chain();
 
     render_table_mxn(4, 2);
     document.getElementById("frame").innerText = frame;
