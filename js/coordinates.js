@@ -20,14 +20,8 @@ function coordinates(x, y) {
     this.shift_south = function() {
         this.x = this.wrap ? (this.x + 1 + height) % height : this.x + 1;
     }
-    // normalize is probably buggy
-    // this.normalize = function(s) {
-    //     // let s = 1;
-    //     let norm_x = this.scale(this.x, s);
-    //     let norm_y = this.scale(this.y, s);
- 
-    //     return new coordinates(norm_x, norm_y);
-    // } 
+
+    // normalize will return send 
     this.normalize = function(distance) {
     // var magnitude = Math.sqrt(this.x * this.x + this.y * this.y);
     let mag = Math.sqrt(this.x * this.x + this.y * this.y);
@@ -35,7 +29,7 @@ function coordinates(x, y) {
     var norm_y = this.y / mag;
     // normal round does not converge
     // return new coordinates(Math.round(norm_x * distance), Math.round(norm_y * distance));
-    // inverted round actually gives a good approximation b/c it will converge
+    // inverted round actually gives a good approximation b/c it will converge like a control loop
     return new coordinates(inverted_round(norm_x * distance), inverted_round(norm_y * distance));
     }
 }

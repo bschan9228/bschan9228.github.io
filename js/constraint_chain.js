@@ -62,6 +62,13 @@ function chain() {
         this.head().shift_west();
     },
 
+    // draw line between segments
+    this.connect = function() {
+        for (var i = 1; i < this.segments.length; i++) {
+            draw_line_bresenham(this.segments[i], this.segments[i - 1]);
+        }
+    },
+
     // write current chain onto the table
     this.write = function() {
         for (var i = 0; i < this.segments.length; i++) {
@@ -75,7 +82,7 @@ let chain_counter = 0;
 function set_chain() {
     // c.move_east();
     // c.move_south();
-    c.chain(5);
+    c.chain(10);
     console.log(coordinates_angle(c.segments[0], c.segments[1]));
 
     if (chain_counter < 15) {
@@ -84,13 +91,13 @@ function set_chain() {
         c.move_east();
         if (chain_counter % 2) c.move_south();
     }
-    else if (chain_counter < 30) {
+    else if (chain_counter < 50) {
         // c.segments[0].y -= 1;
         // c.segments[0].x += 1;
         c.move_east();
         // c.move_south();
     }
-    else if (chain_counter < 45) {
+    else if (chain_counter < 75) {
         // c.move_east();
         // c.move_south();
         c.move_south();
@@ -100,8 +107,9 @@ function set_chain() {
 
     // straight line for ref
     // draw_line_bresenham(0, 1, 20, 1);
+    c.connect();
     c.write();
 
     chain_counter += 1;
-    chain_counter = chain_counter % 70;
+    chain_counter = chain_counter % 90;
 }

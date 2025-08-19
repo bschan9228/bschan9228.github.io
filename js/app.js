@@ -1,6 +1,8 @@
 let frequency = 100;
-let height = 80;
-let width = 100;
+// let height = 80;
+// let width = 100;
+let height = 200;
+let width = 300;
 
 let table = new Array(width * height).fill("-"); // Ascii memory
 let frame = ""; // Rendered ascii

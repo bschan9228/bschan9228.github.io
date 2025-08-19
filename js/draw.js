@@ -20,6 +20,7 @@ function draw_pixel_char(x, y, char) {
     set_char(x, y, char);
 }
 
+// cursed overloaded function
 function draw_pixel(x, y) {
     // console.log(x)
     if (y == undefined) {
@@ -81,6 +82,7 @@ function draw_line_v(x0, y0, x1, y1) {
     }
 }
 
+// cursed "overloaded function"
 function draw_line_bresenham(x0, y0, x1, y1) {
     // TODO: rename for coordinate objects
     if (y1 == undefined) {
