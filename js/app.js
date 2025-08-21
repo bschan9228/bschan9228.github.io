@@ -1,4 +1,4 @@
-let frequency = 100;
+let frequency = 300;
 // let height = 80;
 // let width = 100;
 let height = 200;
@@ -9,13 +9,16 @@ let frame = ""; // Rendered ascii
 
 function run_animation() {
     clear_table();
-    animate_proc();
+    // animate_proc();
     set_chain();
 
     render_table_mxn(4, 2);
+    // render_table();
     document.getElementById("frame").innerText = frame;
 }
 
+// useful for debugging: clearInterval(interval)
+// run_animation();
 const interval = setInterval(function() {
     run_animation();
 }, frequency);

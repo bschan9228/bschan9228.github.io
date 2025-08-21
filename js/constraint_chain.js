@@ -18,15 +18,17 @@ function chain() {
         // new coordinates(0, 35)
     ],
 
-    // Constrain is a little confusing to implement. 
-    // 
     // @point: segment that will follow the anchor
     // @anchor: leading segment
     // @distance: distance to keep between point and anchor
     this.constrain = function(point, anchor, distance) {
-        if (Math.abs(coordinates_dist(point, anchor)) > distance)
+        console.log(`val: ${coordinates_cheb(point, anchor)}`)
+
+        if (coordinates_cheb(point, anchor) > distance){
+            // return coordinates_add(point.norm(anchor, distance), point);
+            // return (coordinates_add((coordinates_sub(point, anchor)).norm(anchor), anchor));
             return (coordinates_add((coordinates_sub(point, anchor)).normalize(distance), anchor));
-            // return 
+        }
         return point;
     }
 
@@ -36,6 +38,7 @@ function chain() {
         // constrain distance
         for (var i = 1; i < this.segments.length; i++) {
             // might be interesting to also constrain/move tail based on head movement later on
+            // console.log(`constraining seg ${i} to ${i+1}`)
             this.segments[i] = this.constrain(
                 this.segments[i], this.segments[i - 1], distance
             );
@@ -82,34 +85,34 @@ let chain_counter = 0;
 function set_chain() {
     // c.move_east();
     // c.move_south();
-    c.chain(10);
-    console.log(coordinates_angle(c.segments[0], c.segments[1]));
+    // console.log(coordinates_angle(c.segments[0], c.segments[1]));
 
-    if (chain_counter < 15) {
+
+    // for(var i = 0; i < Math.random() % 10; i++) {
+    //     c.move_east();
+    // }
+    // for(var i = 0; i < Math.random() % 10; i++) {
+    //     c.move_south();
+    // }
+    
+    if (chain_counter < 35) 
         // c.segments[0].y += 1;
         // c.segments[0].x += 1;
         c.move_east();
-        if (chain_counter % 2) c.move_south();
-    }
-    else if (chain_counter < 50) {
-        // c.segments[0].y -= 1;
-        // c.segments[0].x += 1;
-        c.move_east();
-        // c.move_south();
-    }
-    else if (chain_counter < 75) {
-        // c.move_east();
-        // c.move_south();
-        c.move_south();
-    }
-    else c.move_west();
+    else c.move_south();
 
-
-    // straight line for ref
-    // draw_line_bresenham(0, 1, 20, 1);
-    c.connect();
+    c.chain(4);
+    // c.connect();
     c.write();
 
     chain_counter += 1;
-    chain_counter = chain_counter % 90;
+    chain_counter = chain_counter % 70;
+    console.log(`interval ${chain_counter}`)
+}
+
+function run(n) {
+    if (n == undefined) n = 0;
+    for (var i = 0; i < n; i++) {
+        run_animation();
+    }
 }
