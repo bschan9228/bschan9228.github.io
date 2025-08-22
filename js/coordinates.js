@@ -32,36 +32,6 @@ function coordinates(x, y) {
         return this.x;
     }
 
-    // pretty cool, there is several kinds of geometries
-    // there's actually theory on distance / metric space
-    // Chebyshev, Euclidean, Manhattan 
-    // turns out i needed chebyshev distance
-    // this.cheb()
-
-    this.norm = function(anchor, distance) {
-        // var diff_x = (anchor.x - this.x);
-        // var diff_y = (anchor.y - this.y);
-
-        // var x_norm = this.x >= 0 ? 1 : -1;
-        // var y_norm = this.y >= 0 ? 1 : -1;
-
-        // console.log(`${this.y}, ${anchor.y}`)
-        // console.log(`anchor: ${anchor.x}, ${anchor.y} | point: ${this.x}, ${this.y} | diff: ${diff_x}, ${diff_y}`)
-        // if (Math.abs(diff_x) > Math.abs(diff_y)) return (new coordinates(this.x + x_norm, this.y));
-        // return (new coordinates(this.x, this.y - y_norm));
-        // return new coordinates(x_norm, y_norm);
-
-        // if (diff_x > diff_y) return new coordinates(x_norm, 0);
-        // return new coordinates(0, y_norm);
-
-        let mag = Math.sqrt(this.x * this.x + this.y * this.y);
-        var norm_x = this.x / mag;
-        var norm_y = this.y / mag;
-
-        angle = coordinates_angle(anchor, this);
-        // if (norm_x )
-    }
-
     // normalize will return send 
     this.normalize = function(distance) {
     // var magnitude = Math.sqrt(this.x * this.x + this.y * this.y);
@@ -69,30 +39,48 @@ function coordinates(x, y) {
     var norm_x = this.x / mag;
     var norm_y = this.y / mag;
     
-    // --------------
-
-
-    // --------------
-
-    // if ((Math.abs(norm_x) == 1) || (Math.abs(norm_y) == 1)) {
-    //     // console.log("here")
-    //     // console.log(`${norm_x}, ${norm_y}`)
-    //     // kinda doesnt works & scuffed
-    //     return new coordinates(Math.ceil(norm_x * distance) - 1, Math.ceil(norm_y * distance) - 1);
-    // }
-
-    // for (int i = 0; i < 10; i++) {
-    // console.log(norm_x, norm_y);
-    //     draw_pixel(Math.round(norm_x), Math.round(norm_y));
-    // }
-    // this rounding is not a good idea because diagonals will always round down...
-    // if (norm_x == norm_y)
-        // return new coordinates(Math.ceil(norm_x * distance), Math.ceil(norm_y * distance));
-
-    // normal round does not converge
-    // return new coordinates(Math.floor(norm_x * distance), Math.floor(norm_y * distance));
-    // inverted round actually gives a good approximation b/c it will converge like a control loop
+    // return new coordinates(Math.ceil(norm_x * distance), Math.ceil(norm_y * distance));
     return new coordinates(inverted_round(norm_x * distance), inverted_round(norm_y * distance));
+    }
+
+    // Function will return a coordinate `distance` away from the point
+    // that is orthogonal from the anchor 
+    // TODO: this coordinates_angle is bad. Issue stemming from using euclidean distance.
+    // Need to implement matrix rotation?
+    this.left = function(anchor, distance) {
+        // var angle = (this, anchor);
+        // var p = coordinates_cheb(this, anchor);
+        // p.y = -p.y;
+        // var p = coordinates_sub(anchor, this);
+        // p.x = -p.x;
+        // p.x -= 1;
+        // p.y = -p.y;
+        // p.x = -p.x;
+        // new_coord = coordinates_add(this, p);
+        // console.log(`${new_coord.x}, ${new_coord.y}`);
+        // return coordinates_add(this, p);
+        // return new coordinates(0, 0);
+
+        var angle = coordinates_angle(anchor, this);
+        // var angle = 
+        var x_offset = Math.round(Math.cos(angle - Math.PI) * distance);
+        var y_offset = Math.round(Math.sin(angle + Math.PI) * distance);
+
+        var new_x = this.x - x_offset;
+        var new_y = this.y + y_offset;
+        console.log(`${new_x}, ${new_y}`)
+        return new coordinates(new_x, new_y); 
+    }
+
+    this.right = function(anchor, distance) {
+        var angle = coordinates_angle(anchor, this);
+        var x_offset = Math.round(Math.cos(angle + Math.PI) * distance);
+        var y_offset = Math.round(Math.sin(angle - Math.PI) * distance);
+
+        var new_x = this.x + x_offset;
+        var new_y = this.y - y_offset;
+        console.log(`${new_x}, ${new_y}`)
+        return new coordinates(new_x, new_y); 
     }
 }
 
@@ -111,26 +99,6 @@ function coordinates_sub(coord0, coord1) {
     return new coordinates(dx, dy);
 }
 
-function coordinates_dist(coord0, coord1) {
-    // Using Pythagorean's will not work well & cause rounding 
-    // issues because the graph only handles integers
-
-    // var sq_diff_x = (coord1.x - coord0.x) * (coord1.x - coord0.x);
-    // var sq_diff_y = (coord1.y - coord0.y) * (coord1.y - coord0.y);
-    // return Math.sqrt(sq_diff_x + sq_diff_y);
-    
-    // The alternative is using a nxn square around the anchor
-    // diff = coordinates_sub(coord0, coord1);
-    // var diff_x = Math.abs(coord1.x - coord0.x);
-    // var diff_y = Math.abs(coord1.y - coord0.y);
-    // // console.log(`dist: ${diff_x}, ${diff_y}`)
-    // return (diff_x + diff_y);
-
-    // Need to do a range. Diagonal distance should count as 1.
-
-
-}
-
 function coordinates_angle(coord0, coord1) {
     var coord_diff = coordinates_sub(coord0, coord1);
 
@@ -143,6 +111,10 @@ function inverted_round(n) {
     return Math.ceil(n);
 }
 
+// pretty cool, there is several kinds of geometries
+// there's actually theory on distance / metric space
+// Chebyshev, Euclidean, Manhattan 
+// turns out i needed chebyshev distance
 function coordinates_cheb(coord0, coord1) {
     var coord_diff = coordinates_sub(coord0, coord1);
     return coord_diff.max();

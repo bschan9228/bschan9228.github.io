@@ -1,4 +1,4 @@
-let frequency = 300;
+let frequency = 200;
 // let height = 80;
 // let width = 100;
 let height = 200;

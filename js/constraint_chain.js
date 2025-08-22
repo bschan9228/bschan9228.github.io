@@ -1,36 +1,21 @@
-function chain() {
-    // this.segments = [
-    //     new coordinates(6, 0),
-    //     new coordinates(5, 0),
-    //     new coordinates(4, 0),
-    //     new coordinates(3, 0),
-    //     new coordinates(2, 0),
-    //     new coordinates(1, 0)
-    // ],
-    this.segments = [
-        new coordinates(0, 6),
-        new coordinates(0, 5),
-        new coordinates(0, 4),
-        new coordinates(0, 3),
-        new coordinates(0, 2),
-        new coordinates(0, 1)
-        // new coordinates(0, 30),
-        // new coordinates(0, 35)
-    ],
+function chain(length) {
+    this.segments = [];
+
+    for (var i = 0; i < length; i++) {
+        this.segments.push(new coordinates(10, length - 1));
+    }
 
     // @point: segment that will follow the anchor
     // @anchor: leading segment
     // @distance: distance to keep between point and anchor
     this.constrain = function(point, anchor, distance) {
-        console.log(`val: ${coordinates_cheb(point, anchor)}`)
-
         if (coordinates_cheb(point, anchor) > distance){
             // return coordinates_add(point.norm(anchor, distance), point);
             // return (coordinates_add((coordinates_sub(point, anchor)).norm(anchor), anchor));
             return (coordinates_add((coordinates_sub(point, anchor)).normalize(distance), anchor));
         }
         return point;
-    }
+    },
 
     // constrain segment[i] to segment[i - 1] for i > 0
     // TODO: chaining does not work well with wrapping 
@@ -44,6 +29,17 @@ function chain() {
             );
         }
     },
+
+    this.body = function() {
+        for (var i = 1; i < this.segments.length; i++) {
+            l = this.segments[i].left(this.segments[i - 1], 3);
+            draw_pixel(l);
+            r = this.segments[i].right(this.segments[i - 1], 3);
+            draw_pixel(r);
+        }
+    }
+
+    // get head and tail
     this.head = function() {
         return this.segments[0];
     },
@@ -80,7 +76,7 @@ function chain() {
     }
 }
 
-c = new chain();
+c = new chain(5);
 let chain_counter = 0;
 function set_chain() {
     // c.move_east();
@@ -101,12 +97,13 @@ function set_chain() {
         c.move_east();
     else c.move_south();
 
-    c.chain(4);
+    c.chain(15);
     // c.connect();
+    c.body();
     c.write();
 
     chain_counter += 1;
-    chain_counter = chain_counter % 70;
+    chain_counter = chain_counter % 100;
     console.log(`interval ${chain_counter}`)
 }
 
