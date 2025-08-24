@@ -10,7 +10,8 @@ let frame = ""; // Rendered ascii
 function run_animation() {
     clear_table();
     // animate_proc();
-    set_chain();
+    // update_chain();
+    update_fish();
 
     render_table_mxn(4, 2);
     // render_table();
@@ -22,3 +23,10 @@ function run_animation() {
 const interval = setInterval(function() {
     run_animation();
 }, frequency);
+
+function run(n) {
+    if (n == undefined) n = 0;
+    for (var i = 0; i < n; i++) {
+        run_animation();
+    }
+}

@@ -2,7 +2,7 @@ function chain(length) {
     this.segments = [];
 
     for (var i = 0; i < length; i++) {
-        this.segments.push(new coordinates(10, length - 1));
+        this.segments.push(new coordinates(15, length - 1));
     }
 
     // @point: segment that will follow the anchor
@@ -30,13 +30,25 @@ function chain(length) {
         }
     },
 
-    this.body = function() {
+    // returns array [[left coordinates], [right coordinates]] of the body 
+    // `distance` away, starting from head to tail
+    this.body = function(dist) {
+        // var arr
+        var left_arr = [this.segments[0]];
+        var right_arr = [this.segments[0]];
+        var dist = 5;
         for (var i = 1; i < this.segments.length; i++) {
-            l = this.segments[i].left(this.segments[i - 1], 3);
-            draw_pixel(l);
-            r = this.segments[i].right(this.segments[i - 1], 3);
-            draw_pixel(r);
+            l = this.segments[i].left(this.segments[i - 1]);
+            constrained_l = this.constrain(l, this.segments[i], dist);
+            // draw_pixel(constrained_l);
+            left_arr.push(constrained_l);
+
+            r = this.segments[i].right(this.segments[i - 1]);
+            constrained_r = this.constrain(r, this.segments[i], dist);
+            // draw_pixel(constrained_r);
+            right_arr.push(constrained_r);
         }
+        return [left_arr, right_arr];
     }
 
     // get head and tail
@@ -61,24 +73,24 @@ function chain(length) {
         this.head().shift_west();
     },
 
-    // draw line between segments
-    this.connect = function() {
-        for (var i = 1; i < this.segments.length; i++) {
-            draw_line_bresenham(this.segments[i], this.segments[i - 1]);
+    // draw line between array of coordinates
+    this.connect = function(coordinates) {
+        for (var i = 1; i < coordinates.length; i++) {
+            draw_line_bresenham(coordinates[i], coordinates[i - 1]);
         }
     },
 
-    // write current chain onto the table
-    this.write = function() {
-        for (var i = 0; i < this.segments.length; i++) {
-            draw_pixel(this.segments[i]);
+    // write array of coordinates onto table
+    this.write = function(coordinates) {
+        for (var i = 0; i < coordinates.length; i++) {
+            draw_pixel(coordinates[i]);
         }
     }
 }
 
-c = new chain(5);
+// c = new chain(5);
 let chain_counter = 0;
-function set_chain() {
+function update_chain() {
     // c.move_east();
     // c.move_south();
     // console.log(coordinates_angle(c.segments[0], c.segments[1]));
@@ -99,17 +111,13 @@ function set_chain() {
 
     c.chain(15);
     // c.connect();
-    c.body();
-    c.write();
+
+    // c.write(c.body()[0]);
+    c.connect(c.body()[0]);
+    c.connect(c.body()[1]);
+    // c.write(c.segments);
 
     chain_counter += 1;
     chain_counter = chain_counter % 100;
     console.log(`interval ${chain_counter}`)
-}
-
-function run(n) {
-    if (n == undefined) n = 0;
-    for (var i = 0; i < n; i++) {
-        run_animation();
-    }
 }

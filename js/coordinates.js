@@ -39,48 +39,36 @@ function coordinates(x, y) {
     var norm_x = this.x / mag;
     var norm_y = this.y / mag;
     
-    // return new coordinates(Math.ceil(norm_x * distance), Math.ceil(norm_y * distance));
-    return new coordinates(inverted_round(norm_x * distance), inverted_round(norm_y * distance));
+    return new coordinates(Math.ceil(norm_x * distance), Math.ceil(norm_y * distance));
+    // return new coordinates(inverted_round(norm_x * distance), inverted_round(norm_y * distance));
     }
 
-    // Function will return a coordinate `distance` away from the point
-    // that is orthogonal from the anchor 
-    // TODO: this coordinates_angle is bad. Issue stemming from using euclidean distance.
-    // Need to implement matrix rotation?
-    this.left = function(anchor, distance) {
-        // var angle = (this, anchor);
-        // var p = coordinates_cheb(this, anchor);
-        // p.y = -p.y;
-        // var p = coordinates_sub(anchor, this);
-        // p.x = -p.x;
-        // p.x -= 1;
-        // p.y = -p.y;
-        // p.x = -p.x;
-        // new_coord = coordinates_add(this, p);
-        // console.log(`${new_coord.x}, ${new_coord.y}`);
-        // return coordinates_add(this, p);
-        // return new coordinates(0, 0);
-
-        var angle = coordinates_angle(anchor, this);
-        // var angle = 
-        var x_offset = Math.round(Math.cos(angle - Math.PI) * distance);
-        var y_offset = Math.round(Math.sin(angle + Math.PI) * distance);
-
-        var new_x = this.x - x_offset;
-        var new_y = this.y + y_offset;
-        console.log(`${new_x}, ${new_y}`)
-        return new coordinates(new_x, new_y); 
+    // Function will return a coordinate transformed/rotated 90 degree away 
+    // from this -> anchor vector
+    this.left = function(anchor) {
+        var offset = coordinates_sub(this, anchor);
+        var new_x = this.x + Math.round(offset.y);
+        var new_y = this.y - Math.round(offset.x); 
+        return new coordinates(new_x, new_y);
     }
 
-    this.right = function(anchor, distance) {
-        var angle = coordinates_angle(anchor, this);
-        var x_offset = Math.round(Math.cos(angle + Math.PI) * distance);
-        var y_offset = Math.round(Math.sin(angle - Math.PI) * distance);
+    // same thing for right side
+    this.right = function(anchor) { 
+        var offset = coordinates_sub(this, anchor);
+        var new_x = this.x - Math.round(offset.y);
+        var new_y = this.y + Math.round(offset.x); 
+        return new coordinates(new_x, new_y);
+    }
 
-        var new_x = this.x + x_offset;
-        var new_y = this.y - y_offset;
-        console.log(`${new_x}, ${new_y}`)
-        return new coordinates(new_x, new_y); 
+    // only translates rotation, not dist
+    // coordinate semantics ain't it for this one
+    this.rotate = function(anchor, radians) {
+        var offset = coordinates_sub(anchor, this);
+        var dist = Math.sqrt(offset.x * offset.x + offset.y * offset.y);
+        var anchor_angle = Math.atan2(offset.x, -offset.y);
+        var x_rotated = Math.round(dist * Math.cos(anchor_angle - radians));
+        var y_rotated = Math.round(dist * Math.sin(anchor_angle - radians));
+        return new coordinates(this.x + x_rotated, this.y + y_rotated);
     }
 }
 
